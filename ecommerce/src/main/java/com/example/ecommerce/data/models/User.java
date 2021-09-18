@@ -33,6 +33,7 @@ public class User {
 	
 	@NotBlank
 	@NotNull
+	@Size(min = 6)
 	private String password;
 	
 	@NotBlank

@@ -1,10 +1,10 @@
 package com.example.ecommerce.service;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +20,11 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	UserRepository userRepository;
 	
-
+	/*
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	*/
+	PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	
 	@Override
 	public MessageResponse createUser(UserRequest userRequest) throws UserEmailExistsException {
@@ -36,7 +38,7 @@ public class UserServiceImpl implements UserService {
 		newUser.setFirst_name(userRequest.getFirst_name());
 		newUser.setLast_name(userRequest.getLast_name());
 		newUser.setEmail(userRequest.getEmail());
-		newUser.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+		newUser.setPassword(encoder.encode(userRequest.getPassword()));
 		newUser.setPhone_number(userRequest.getPhone_number());
 		newUser.setAddress(userRequest.getAddress());
 		newUser.setRole(userRequest.getRole());
@@ -48,6 +50,13 @@ public class UserServiceImpl implements UserService {
 
 	private boolean emailExist(String email) {
 		return userRepository.findByEmail(email) != null;
+	}
+
+	@Override
+	public Optional<User> getUser(Integer id) {
+		// TODO Auto-generated method stub
+		return userRepository.findById(id);
+		// return new MessageResponse(userRepository.findById(id).toString());
 	}
 
 }
